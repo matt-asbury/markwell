@@ -29,6 +29,7 @@
   "build": {
     "appId": "com.markwell.app",
     "productName": "Markwell",
+    "publish": null,
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "assets/icon.png"
