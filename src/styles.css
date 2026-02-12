@@ -1,3 +1,38 @@
+/* Design tokens – Stoplight-inspired doc aesthetic */
+:root {
+  /* Colors */
+  --color-bg: #ffffff;
+  --color-bg-sidebar: #f8f9fa;
+  --color-bg-reader: #ffffff;
+  --color-surface: #ececec;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #444444;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-subtle: #f3f4f6;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  /* Code blocks */
+  --color-code-bg: #1e1e1e;
+  --color-code-fg: #d4d4d4;
+  --color-inline-code-bg: #f3f4f6;
+  --color-inline-code-border: #e5e7eb;
+  /* Spacing */
+  --space-unit: 8px;
+  --space-sm: calc(var(--space-unit) * 1);
+  --space-md: calc(var(--space-unit) * 2);
+  --space-lg: calc(var(--space-unit) * 3);
+  --space-xl: calc(var(--space-unit) * 4);
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  --text-base: 16px;
+  --line-height: 1.75;
+}
+
 *,
 *::before,
 *::after {
@@ -6,10 +41,10 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  font-size: 16px;
-  color: #1a1a1a;
-  background: #fff;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 .app {
@@ -22,16 +57,16 @@ body {
   width: 280px;
   min-width: 200px;
   flex-shrink: 0;
-  background: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
+  background: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .sidebar-header {
-  padding: 16px 12px 12px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: var(--space-md) var(--space-md) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -43,8 +78,8 @@ body {
 }
 
 .sidebar-section {
-  padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sidebar-section:last-of-type {
@@ -54,30 +89,35 @@ body {
 }
 
 .sidebar-heading {
-  margin: 0 0 8px;
-  font-size: 12px;
+  margin: 0 0 var(--space-sm);
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #666;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
 }
 
 .btn-open-file {
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px var(--space-md);
   font-size: 14px;
   font-weight: 500;
-  color: #333;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  color: #fff;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-sm);
 }
 
 .btn-open-file:hover {
-  background: #f0f0f0;
-  border-color: #999;
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.btn-open-file:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .recent-list {
@@ -92,13 +132,13 @@ body {
 
 .recent-list button {
   width: 100%;
-  padding: 8px 10px;
+  padding: var(--space-sm) 10px;
   font-size: 13px;
   text-align: left;
-  color: #333;
+  color: var(--color-text-secondary);
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -106,7 +146,13 @@ body {
 }
 
 .recent-list button:hover {
-  background: #e8e8e8;
+  background: var(--color-border-subtle);
+  color: var(--color-text);
+}
+
+.recent-list button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 0;
 }
 
 .reader {
@@ -114,7 +160,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-bg-reader);
 }
 
 .reader-placeholder {
@@ -122,7 +168,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 15px;
 }
 
@@ -143,11 +189,11 @@ body {
 
 .reader-title {
   margin: 0;
-  padding: 20px 32px 12px;
+  padding: var(--space-lg) var(--space-xl) var(--space-md);
   font-size: 18px;
   font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #eee;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
 }
 
@@ -162,10 +208,11 @@ body {
 .reader-body {
   flex: 1;
   overflow: auto;
-  padding: 24px 32px 48px;
-  font-size: 18px;
-  line-height: 1.6;
+  padding: var(--space-lg) 48px var(--space-xl);
+  font-size: 16px;
+  line-height: var(--line-height);
   max-width: 720px;
+  color: var(--color-text);
 }
 
 .reader-toc {
@@ -173,8 +220,8 @@ body {
   width: 220px;
   flex-shrink: 0;
   overflow-y: auto;
-  padding: 24px 16px 48px 8px;
-  border-left: 1px solid #eee;
+  padding: var(--space-lg) var(--space-md) var(--space-xl) var(--space-lg);
+  border-left: 1px solid var(--color-border-subtle);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -186,12 +233,12 @@ body {
 }
 
 .reader-toc__title {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #666;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
 }
 
 .reader-toc__list {
@@ -201,22 +248,27 @@ body {
 }
 
 .reader-toc__item {
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 .reader-toc__link {
   display: block;
-  color: #444;
+  color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 2px 0;
-  border-radius: 4px;
+  padding: var(--space-sm) 0;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .reader-toc__link:hover {
-  color: #0066cc;
+  color: var(--color-accent);
+}
+
+.reader-toc__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .reader-toc__link--h1 {
@@ -224,19 +276,19 @@ body {
   font-weight: 600;
 }
 .reader-toc__link--h2 {
-  padding-left: 8px;
+  padding-left: var(--space-sm);
 }
 .reader-toc__link--h3 {
-  padding-left: 16px;
+  padding-left: var(--space-md);
 }
 .reader-toc__link--h4 {
-  padding-left: 24px;
+  padding-left: var(--space-lg);
 }
 .reader-toc__link--h5 {
-  padding-left: 32px;
+  padding-left: calc(var(--space-unit) * 4);
 }
 .reader-toc__link--h6 {
-  padding-left: 40px;
+  padding-left: calc(var(--space-unit) * 5);
 }
 
 .reader-body h1,
@@ -245,20 +297,32 @@ body {
 .reader-body h4,
 .reader-body h5,
 .reader-body h6 {
-  scroll-margin-top: 16px;
+  scroll-margin-top: var(--space-md);
+  color: var(--color-text);
 }
 .reader-body h1 {
-  font-size: 1.75em;
+  font-size: 1.875em;
+  font-weight: 700;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 .reader-body h2 {
-  font-size: 1.4em;
-  margin-top: 1.25em;
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-top: 1.35em;
   margin-bottom: 0.4em;
 }
 .reader-body h3 {
-  font-size: 1.2em;
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-top: 1.15em;
+  margin-bottom: 0.35em;
+}
+.reader-body h4,
+.reader-body h5,
+.reader-body h6 {
+  font-size: 1.1em;
+  font-weight: 600;
   margin-top: 1em;
   margin-bottom: 0.3em;
 }
@@ -272,22 +336,28 @@ body {
 }
 .reader-body pre {
   margin: 0 0 1em;
-  padding: 12px;
-  background: #f5f5f5;
-  border-radius: 6px;
+  padding: var(--space-md);
+  background: var(--color-code-bg);
+  border-radius: var(--radius-md);
   overflow: auto;
   font-size: 0.9em;
+  font-family: var(--font-mono);
+  color: var(--color-code-fg);
 }
 .reader-body code {
-  font-family: ui-monospace, monospace;
-  background: #f0f0f0;
+  font-family: var(--font-mono);
+  background: var(--color-inline-code-bg);
+  border: 1px solid var(--color-inline-code-border);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 0.9em;
+  color: var(--color-text);
 }
 .reader-body pre code {
   background: none;
+  border: none;
   padding: 0;
+  color: var(--color-code-fg);
 }
 .reader-body .mermaid {
   margin: 1em 0;
@@ -298,21 +368,29 @@ body {
   height: auto;
 }
 .reader-body .mermaid-error {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.9em;
 }
 .reader-body blockquote {
   margin: 0 0 1em;
   padding-left: 1em;
-  border-left: 4px solid #ccc;
-  color: #555;
+  border-left: 4px solid var(--color-accent);
+  color: var(--color-text-muted);
 }
 .reader-body a {
-  color: #0066cc;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.reader-body a:hover {
+  text-decoration: underline;
+}
+.reader-body a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 .reader-body hr {
   border: none;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--color-border);
   margin: 1.5em 0;
 }
 
@@ -324,22 +402,23 @@ body {
   font-size: 0.95em;
 }
 .reader-body thead {
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid var(--color-text);
+  background: var(--color-border-subtle);
 }
 .reader-body th {
   text-align: left;
-  padding: 10px 12px;
+  padding: var(--space-md) var(--space-md);
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
   vertical-align: top;
 }
 .reader-body td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: var(--space-md) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
   vertical-align: top;
 }
 .reader-body tbody tr:hover {
-  background: #f9f9f9;
+  background: var(--color-border-subtle);
 }
 .reader-body tbody tr:last-child td {
   border-bottom: none;
