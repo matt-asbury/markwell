@@ -1,0 +1,36 @@
+{
+  "name": "markwell",
+  "version": "1.0.0",
+  "description": "Read Markdown well — a minimal .md reader for macOS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "node scripts/build-icon.js && electron-builder --mac",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --test test/slugify.test.js test/store.test.js test/ipc-handlers.test.js"
+  },
+  "author": "Markwell Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "sharp": "^0.33.5"
+  },
+  "dependencies": {
+    "marked": "^15.0.0"
+  },
+  "build": {
+    "appId": "com.markwell.app",
+    "productName": "Markwell",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "assets/icon.png"
+    }
+  }
+}
