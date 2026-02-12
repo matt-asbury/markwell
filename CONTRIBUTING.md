@@ -21,6 +21,8 @@ The project does not commit `package-lock.json` or `.npmrc`. To use a custom reg
 
 Please run `npm run lint`, `npm run format:check`, and `npm test` before submitting a PR.
 
+**Simulate CI locally** (e.g. to verify the workflow will pass): from the repo root, run `npm run ci`. To mirror CI exactly without a lockfile: `rm -f package-lock.json && npm install && npm run ci` (and `npm run build` on macOS if you want to test the build job).
+
 ## Submitting changes
 
 1. Open an issue or comment on an existing one so we can align on the approach.
