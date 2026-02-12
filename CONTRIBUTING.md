@@ -5,9 +5,13 @@ Thanks for your interest in contributing. Here’s how to get started.
 ## Run and build
 
 - **Prerequisites**: Node.js 18+ (LTS recommended), npm.
-- **Install**: `npm install`
+- **Install**: `npm install` (see [Registry setup](#registry-setup) if you use a custom npm registry).
 - **Run**: `npm start`
 - **Build** (macOS): `npm run build` (produces the app in `dist/`)
+
+### Registry setup
+
+The project does not commit `package-lock.json` or `.npmrc`. To use a custom registry, copy `.npmrc.example` to `.npmrc`, set `registry=` to your registry URL, then run `npm install`. Do not commit `.npmrc`.
 
 ## Code style and checks
 

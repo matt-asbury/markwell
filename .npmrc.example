@@ -1,0 +1,9 @@
+# NPM registry configuration (optional)
+# Copy this file to .npmrc (or merge into your user ~/.npmrc) and adjust as needed.
+# .npmrc is gitignored so your registry URL is never committed.
+
+# Default: npm uses https://registry.npmjs.org/ when no .npmrc is present.
+# To use a different registry, create .npmrc in this project with, e.g.:
+# registry=https://registry.npmjs.org/
+
+# Then run: npm install

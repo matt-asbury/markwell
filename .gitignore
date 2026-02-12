@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Lockfile and local registry config (see .npmrc.example)
+package-lock.json
+.npmrc
+
 # Build output
 dist/
 

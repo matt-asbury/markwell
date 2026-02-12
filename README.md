@@ -14,6 +14,8 @@ npm install
 npm start
 ```
 
+To use a custom npm registry, see [.npmrc.example](.npmrc.example). The repo does not commit a lockfile or `.npmrc`.
+
 - **Open file**: Click "Open file…" or use **Cmd+O** to pick a `.md` file.
 - **Recent**: Recently opened files are listed in the sidebar; click to reopen.
 - **Reader**: Markdown is rendered in the main panel (readable font size, max-width). Mermaid diagrams in code blocks are supported. Window size and position are remembered.
