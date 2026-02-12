@@ -89,6 +89,19 @@ function setupIpcHandlers({ mainWindow, dialog, store }) {
       // Ignore (e.g. invalid URL or no handler)
     }
   });
+
+  ipcMain.handle('resolve-path', (_, baseFilePath, linkHref) => {
+    if (!baseFilePath || !linkHref || typeof linkHref !== 'string') return null;
+    const trimmed = linkHref.trim();
+    if (!trimmed || trimmed.startsWith('#') || /^https?:\/\//i.test(trimmed) || /^mailto:/i.test(trimmed)) return null;
+    try {
+      const dir = path.dirname(path.resolve(baseFilePath));
+      const resolved = path.resolve(dir, trimmed);
+      return validateFilePath(resolved);
+    } catch {
+      return null;
+    }
+  });
 }
 
 module.exports = { setupIpcHandlers, validateFilePath };

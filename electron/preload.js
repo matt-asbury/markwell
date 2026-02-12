@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld('api', {
   addRecent: (filePath) => ipcRenderer.invoke('add-recent', filePath),
   renderMarkdown: (md) => ipcRenderer.invoke('render-markdown', md),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
+  resolvePath: (baseFilePath, linkHref) => ipcRenderer.invoke('resolve-path', baseFilePath, linkHref),
   onFileSelected: (cb) => {
     onFileSelected = cb;
   },

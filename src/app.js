@@ -14,6 +14,9 @@ const slugify =
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '') || 'section');
 
+/** Full path of the currently open file, used to resolve relative document links. */
+let currentFilePath = null;
+
 function showPlaceholder() {
   placeholder.classList.remove('hidden');
   readerContent.classList.add('hidden');
@@ -151,8 +154,10 @@ async function openFile(filePath) {
   const result = await window.api.readFile(filePath);
   if (result.error) {
     showReader(basename(filePath), `Could not read file: ${result.error}`);
+    currentFilePath = null;
     return;
   }
+  currentFilePath = filePath;
   await window.api.addRecent(filePath);
   const html = await window.api.renderMarkdown(result.content);
   showReader(basename(filePath), html, true);
@@ -174,14 +179,29 @@ function refreshRecent() {
   });
 }
 
+function isHashLink(href) {
+  if (!href || typeof href !== 'string') return false;
+  const trimmed = href.trim();
+  return trimmed === '' || trimmed.startsWith('#');
+}
+
 readerBody.addEventListener('click', (e) => {
   const a = e.target.closest('a');
   if (!a || !a.href) return;
-  if (isExternalLink(a.getAttribute('href'))) {
+  const rawHref = a.getAttribute('href');
+  if (isExternalLink(rawHref)) {
     e.preventDefault();
     if (window.api && typeof window.api.openExternal === 'function') {
       window.api.openExternal(a.href);
     }
+    return;
+  }
+  if (isHashLink(rawHref)) return;
+  e.preventDefault();
+  if (currentFilePath && window.api && typeof window.api.resolvePath === 'function') {
+    window.api.resolvePath(currentFilePath, rawHref).then((resolved) => {
+      if (resolved) openFile(resolved);
+    });
   }
 });
 
