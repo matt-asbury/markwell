@@ -315,3 +315,32 @@ body {
   border-top: 1px solid #ddd;
   margin: 1.5em 0;
 }
+
+/* Tables: clear layout, borders, and spacing so columns read well */
+.reader-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+  font-size: 0.95em;
+}
+.reader-body thead {
+  border-bottom: 2px solid #333;
+}
+.reader-body th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  color: #333;
+  vertical-align: top;
+}
+.reader-body td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: top;
+}
+.reader-body tbody tr:hover {
+  background: #f9f9f9;
+}
+.reader-body tbody tr:last-child td {
+  border-bottom: none;
+}
