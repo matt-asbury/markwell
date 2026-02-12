@@ -13,6 +13,10 @@ Thanks for your interest in contributing. Here’s how to get started.
 
 The project does not commit `package-lock.json` or `.npmrc`. To use a custom registry, copy `.npmrc.example` to `.npmrc`, set `registry=` to your registry URL, then run `npm install`. Do not commit `.npmrc`.
 
+### Dependencies
+
+We do not commit a lockfile. To limit version creep and breaking changes, critical runtime and build dependencies use **tilde ranges** (`~x.y.z`) in `package.json`, so only patch updates are installed. CI runs `npm audit --omit=dev --audit-level=critical` so known critical vulnerabilities in production dependencies fail the build.
+
 ## Code style and checks
 
 - **Lint**: `npm run lint` (ESLint)
