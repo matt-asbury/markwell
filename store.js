@@ -23,7 +23,11 @@ function createStore(app) {
   }
 
   function writeStore(obj) {
-    fs.writeFileSync(getStorePath(), JSON.stringify(obj, null, 0), 'utf-8');
+    try {
+      fs.writeFileSync(getStorePath(), JSON.stringify(obj, null, 0), 'utf-8');
+    } catch (err) {
+      console.error('Markwell: could not save preferences', err.message);
+    }
   }
 
   return { getStorePath, readStore, writeStore, MAX_RECENT };

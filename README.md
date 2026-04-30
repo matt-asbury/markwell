@@ -1,6 +1,6 @@
 # Markwell
 
-**Read Markdown well.** A minimal .md reader for macOS: open a file or pick from Recent, read in a large panel. No accounts, no extras.
+**Read Markdown well.** A minimal reader for macOS: open **`.md`** or **`.mmd`** (MultiMarkdown or standalone Mermaid) or pick from Recent, read in a large panel. No accounts, no extras.
 
 ## Prerequisites
 
@@ -14,11 +14,11 @@ npm install
 npm start
 ```
 
-To use a custom npm registry, see [.npmrc.example](.npmrc.example). The repo does not commit a lockfile or `.npmrc`.
+If you use a **private npm registry**, copy [.npmrc.example](.npmrc.example) to `.npmrc` and set `registry` and auth as required. The repo does not commit a lockfile or `.npmrc`.
 
-- **Open file**: Click "Open file…" or use **Cmd+O** to pick a `.md` file.
+- **Open file**: Click "Open file…" or use **Cmd+O** to pick a `.md` or `.mmd` file.
 - **Recent**: Recently opened files are listed in the sidebar; click to reopen.
-- **Reader**: Markdown is rendered in the main panel (readable font size, max-width). Mermaid diagrams in code blocks are supported. Window size and position are remembered.
+- **Reader**: Markdown is rendered in the main panel (readable font size, max-width). Mermaid works from fenced mermaid code blocks in `.md` and from raw diagram text in many `.mmd` files. Window size and position are remembered.
 
 ## Build (optional)
 
@@ -38,8 +38,8 @@ Produces a Mac app in `dist/`. The first time you run `npm run build`, the scrip
 ## Tech stack
 
 - [Electron](https://www.electronjs.org/) — Desktop app
-- [marked](https://github.com/markedjs/marked) — Markdown to HTML
-- [Mermaid](https://mermaid.js.org/) — Diagrams in code blocks (loaded from CDN with SRI)
+- [marked](https://github.com/markedjs/marked) + [marked-footnote](https://www.npmjs.com/package/marked-footnote) — Markdown to HTML (footnotes for `.mmd` when not in standalone-Mermaid mode)
+- [Mermaid](https://mermaid.js.org/) — Diagrams (CDN with SRI; see `index.html` load order)
 
 ## License and contributing
 

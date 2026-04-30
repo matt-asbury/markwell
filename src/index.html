@@ -35,8 +35,7 @@
         </div>
       </main>
     </div>
-    <!-- app.js first so Open file and menu work even if CDN or slugify fail to load -->
-    <script src="app.js"></script>
+    <!-- DOMPurify + Mermaid before app.js (initialize + sanitize must run; SRI on CDN) -->
     <script
       src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"
       integrity="sha384-3HPB1XT51W3gGRxAmZ+qbZwRpRlFQL632y8x+adAqCr4Wp3TaWwCLSTAJJKbyWEK"
@@ -47,6 +46,10 @@
       integrity="sha384-vZlRINSt/aWjfrBr3LwOu4Q8Fr7BeaTSTMplgiZRBJEmRndm6dLwre9JEjinTCJK"
       crossorigin="anonymous"
     ></script>
+    <!-- lib/*.js then app.js: global `slugify` comes from slugify.js — do not redeclare `slugify` in app.js -->
+    <script src="../lib/renderer-helpers.js"></script>
     <script src="../lib/slugify.js"></script>
+    <script src="../lib/reader-dom.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

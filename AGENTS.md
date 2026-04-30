@@ -2,11 +2,11 @@
 
 ## Project
 
-Markwell is a minimal Markdown reader for macOS: open a file or pick from Recent, read in a large panel. No accounts, no extras. Stack: Electron, Node.js 18+, npm. Build target is macOS (run works on any platform where Electron runs). Markdown is rendered with [marked](https://github.com/markedjs/marked); Mermaid diagrams in code blocks are supported (CDN with SRI).
+Markwell is a minimal reader for macOS: open **Markdown** (`.md`) or **MultiMarkdown / diagram** (`.mmd`) files, or pick from Recent. Stack: Electron, Node.js 18+, npm. **Rendering**: [marked](https://github.com/markedjs/marked) + [marked-footnote](https://www.npmjs.com/package/marked-footnote); `.mmd` may be parsed as MultiMarkdown (metadata, footnotes) or, when the body looks like a single Mermaid diagram, as raw Mermaid. **Mermaid** and **DOMPurify** load from CDN with SRI in `index.html` (load order: CDN → `lib/*.js` → `app.js`). **Do not** redeclare the global `slugify` in `app.js` — `lib/slugify.js` already defines it; use `slugifyForHeadings` or `window.slugify` only.
 
 ## Build and validate
 
-- **Bootstrap**: Run `npm install` first.
+- **Bootstrap**: Run `npm install` first (use [.npmrc.example](.npmrc.example) → `.npmrc` when using a private npm registry).
 - **Before every PR**: Run `npm run lint`, `npm run format:check`, and `npm test`. All three must pass.
 - **Commands**:
   - `npm start` — run the app
@@ -23,6 +23,8 @@ Markwell is a minimal Markdown reader for macOS: open a file or pick from Recent
 - `electron/preload.js` — Preload script; exposes `window.api` to renderer
 - `src/` — Renderer: `index.html`, `app.js`, `styles.css`
 - `lib/slugify.js` — Slugify helper (used in renderer and tests)
+- `lib/markdown-render.js` — marked + footnotes, MultiMarkdown metadata strip, standalone Mermaid `.mmd` detection
+- `lib/renderer-helpers.js`, `lib/reader-dom.js` — basename / links / TOC (also loaded in the renderer before `app.js`)
 - `test/` — Unit tests
 
 For full layout and file roles, see [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -1,0 +1,10 @@
+---
+description: Do not commit organization-specific registry URLs or internal company names in tracked files.
+alwaysApply: true
+---
+
+# Private registry and internal naming
+
+- Do **not** add references to specific employers, clients, or internal project codenames in any committed file.
+- Do **not** hard-code organization-specific npm registry hostnames or internal artifact server URLs in docs, examples, or `.npmrc.example`. Use placeholders such as `YOUR_REGISTRY_HOST`, `YOUR_NPM_REPO`, or `example.com`, and describe “your private npm registry” in prose.
+- Real internal URLs and tokens belong only in a **local** `.npmrc` (gitignored), not in examples meant for public contributors.

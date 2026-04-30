@@ -5,14 +5,18 @@ const readerBody = document.getElementById('reader-body');
 const readerToc = document.getElementById('reader-toc');
 const recentList = document.getElementById('recent-list');
 const openFileBtn = document.getElementById('open-file');
-const slugify =
-  window.slugify ||
-  ((t) =>
-    String(t)
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w-]+/g, '') || 'section');
+// Must not redeclare `slugify` — lib/slugify.js already creates a global `function slugify`.
+const slugifyForHeadings =
+  typeof window.slugify === 'function'
+    ? window.slugify
+    : (t) =>
+        String(t)
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '') || 'section';
 
 /** Full path of the currently open file, used to resolve relative document links. */
 let currentFilePath = null;
@@ -22,15 +26,9 @@ function showPlaceholder() {
   readerContent.classList.add('hidden');
 }
 
-// Mermaid: startOnLoad false so we run diagrams only after injecting rendered HTML (e.g. from code blocks).
+// Mermaid: index.html loads mermaid before this file; startOnLoad false — we call run() after DOM injection.
 if (typeof mermaid !== 'undefined') {
   mermaid.initialize({ startOnLoad: false });
-}
-
-function isExternalLink(href) {
-  if (!href || typeof href !== 'string') return false;
-  const trimmed = href.trim();
-  return /^https?:\/\//i.test(trimmed) || /^mailto:/i.test(trimmed);
 }
 
 function showReader(title, bodyContent, isHtml = false) {
@@ -41,66 +39,23 @@ function showReader(title, bodyContent, isHtml = false) {
     const safeHtml = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(bodyContent) : bodyContent;
     readerBody.innerHTML = safeHtml;
     renderMermaidDiagrams(readerBody);
-    addHeadingIds(readerBody);
-    buildTableOfContents(readerBody, readerToc);
+    if (typeof addHeadingIds === 'function') addHeadingIds(readerBody, slugifyForHeadings);
+    if (typeof buildTableOfContents === 'function') buildTableOfContents(readerBody, readerToc);
   } else {
     readerBody.textContent = bodyContent;
-    buildTableOfContents(null, readerToc);
+    if (typeof buildTableOfContents === 'function') buildTableOfContents(null, readerToc);
   }
   readerTitle.setAttribute('tabindex', '-1');
   readerTitle.focus();
 }
 
-function addHeadingIds(container) {
-  if (!container) return;
-  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const used = new Set();
-  headings.forEach((el) => {
-    let id = slugify(el.textContent);
-    if (used.has(id)) {
-      let n = 1;
-      while (used.has(id + '-' + n)) n++;
-      id = id + '-' + n;
-    }
-    used.add(id);
-    el.id = id;
-  });
-}
-
-function buildTableOfContents(container, tocEl) {
-  if (!tocEl) return;
-  tocEl.innerHTML = '';
-  tocEl.classList.remove('reader-toc--empty');
-  if (!container) {
-    tocEl.classList.add('reader-toc--empty');
-    return;
-  }
-  const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  if (headings.length === 0) {
-    tocEl.classList.add('reader-toc--empty');
-    return;
-  }
-  const title = document.createElement('p');
-  title.className = 'reader-toc__title';
-  title.textContent = 'On this page';
-  tocEl.appendChild(title);
-  const list = document.createElement('ul');
-  list.className = 'reader-toc__list';
-  headings.forEach((el) => {
-    const li = document.createElement('li');
-    li.className = 'reader-toc__item';
-    const a = document.createElement('a');
-    a.className = 'reader-toc__link reader-toc__link--' + el.tagName.toLowerCase();
-    a.href = '#' + el.id;
-    a.textContent = el.textContent.trim();
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    li.appendChild(a);
-    list.appendChild(li);
-  });
-  tocEl.appendChild(list);
+/**
+ * Mermaid does not treat the two-character sequence \\n as a newline (unlike many languages).
+ * Many diagram exports still use literal \\n / \\t in labels — normalize before parsing.
+ * In source you can also use a real line break or <br/> in labels (see Mermaid docs).
+ */
+function normalizeMermaidExporterEscapes(text) {
+  return String(text).replace(/\\n/g, '\n').replace(/\\t/g, '\t');
 }
 
 function renderMermaidDiagrams(container) {
@@ -111,7 +66,7 @@ function renderMermaidDiagrams(container) {
     if (!pre) return;
     const div = document.createElement('div');
     div.className = 'mermaid';
-    div.textContent = code.textContent.trim();
+    div.textContent = normalizeMermaidExporterEscapes(code.textContent.trim());
     pre.replaceWith(div);
   });
   const mermaidNodes = container.querySelectorAll('.mermaid');
@@ -125,12 +80,11 @@ function renderMermaidDiagrams(container) {
   }
 }
 
-function basename(filePath) {
-  return filePath.split(/[/\\]/).pop() || filePath;
-}
-
 async function openFileDialog() {
-  if (!window.api || typeof window.api.openFile !== 'function') return;
+  if (!window.api || typeof window.api.openFile !== 'function') {
+    console.error('Markwell: window.api is missing (preload not loaded or wrong context).');
+    return;
+  }
   const btn = openFileBtn;
   const originalText = btn ? btn.textContent : '';
   if (btn) {
@@ -159,7 +113,7 @@ async function openFile(filePath) {
   }
   currentFilePath = filePath;
   await window.api.addRecent(filePath);
-  const html = await window.api.renderMarkdown(result.content);
+  const html = await window.api.renderMarkdown(result.content, { filePath });
   showReader(basename(filePath), html, true);
   refreshRecent();
 }
@@ -177,12 +131,6 @@ function refreshRecent() {
       recentList.appendChild(li);
     });
   });
-}
-
-function isHashLink(href) {
-  if (!href || typeof href !== 'string') return false;
-  const trimmed = href.trim();
-  return trimmed === '' || trimmed.startsWith('#');
 }
 
 readerBody.addEventListener('click', (e) => {

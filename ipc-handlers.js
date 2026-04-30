@@ -4,7 +4,7 @@
 const path = require('path');
 const fs = require('fs');
 const { ipcMain, shell } = require('electron');
-const { marked } = require('marked');
+const { renderMarkdownToHtml } = require('./lib/markdown-render');
 
 const EXTERNAL_PROTOCOLS = /^https?:\/\//i;
 const MAILTO_PROTOCOL = /^mailto:/i;
@@ -27,18 +27,45 @@ function validateFilePath(filePath) {
   }
 }
 
-function setupIpcHandlers({ mainWindow, dialog, store }) {
+function setupIpcHandlers({ getMainWindow, dialog, store }) {
   ipcMain.handle('open-file', async () => {
-    const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : null;
+    const debugOpen = process.env.MARKWELL_DEBUG_OPEN === '1';
+    if (debugOpen) {
+      console.log('[Markwell main] open-file IPC invoked');
+    }
+    const mw = typeof getMainWindow === 'function' ? getMainWindow() : null;
+    const win = mw && !mw.isDestroyed() ? mw : null;
+    if (debugOpen) {
+      console.log(
+        '[Markwell main] getMainWindow:',
+        mw == null ? 'null' : mw.isDestroyed() ? 'BrowserWindow(destroyed)' : 'BrowserWindow(ok)',
+        '→ showOpenDialog parent:',
+        win == null ? 'null' : 'BrowserWindow'
+      );
+    }
     if (win) win.focus();
-    const result = await dialog.showOpenDialog(win, {
-      properties: ['openFile'],
-      title: 'Open Markdown file',
-      filters: [
-        { name: 'Markdown', extensions: ['md', 'markdown'] },
-        { name: 'All files', extensions: ['*'] },
-      ],
-    });
+    let result;
+    try {
+      result = await dialog.showOpenDialog(win, {
+        properties: ['openFile'],
+        title: 'Open Markdown file',
+        filters: [
+          { name: 'Markdown', extensions: ['md', 'markdown', 'mmd'] },
+          { name: 'All files', extensions: ['*'] },
+        ],
+      });
+    } catch (err) {
+      console.error('[Markwell main] showOpenDialog threw', err);
+      throw err;
+    }
+    if (debugOpen) {
+      console.log(
+        '[Markwell main] showOpenDialog done; canceled=',
+        result.canceled,
+        'paths=',
+        (result.filePaths && result.filePaths.length) || 0
+      );
+    }
     if (result.canceled || !result.filePaths || result.filePaths.length === 0) return null;
     return result.filePaths[0];
   });
@@ -54,10 +81,12 @@ function setupIpcHandlers({ mainWindow, dialog, store }) {
     }
   });
 
-  ipcMain.handle('render-markdown', async (_, raw) => {
+  ipcMain.handle('render-markdown', async (_, raw, options = {}) => {
     if (raw == null || typeof raw !== 'string') return '';
     try {
-      const out = marked.parse(raw);
+      const filePath = options && typeof options.filePath === 'string' ? options.filePath : '';
+      const isMultiMarkdown = /\.mmd$/i.test(filePath);
+      const out = renderMarkdownToHtml(raw, { isMultiMarkdown });
       return typeof out?.then === 'function' ? await out : out;
     } catch {
       return raw;

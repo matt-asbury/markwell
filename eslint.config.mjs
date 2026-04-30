@@ -27,6 +27,11 @@ export default [
         DOMPurify: 'readonly',
         mermaid: 'readonly',
         console: 'readonly',
+        basename: 'readonly',
+        isExternalLink: 'readonly',
+        isHashLink: 'readonly',
+        addHeadingIds: 'readonly',
+        buildTableOfContents: 'readonly',
       },
     },
   },
@@ -35,8 +40,17 @@ export default [
     languageOptions: {
       globals: {
         window: 'readonly',
+        document: 'readonly',
         module: 'readonly',
         console: 'readonly',
+      },
+    },
+  },
+  {
+    files: ['test/**/*.js'],
+    languageOptions: {
+      globals: {
+        global: 'writable',
       },
     },
   },

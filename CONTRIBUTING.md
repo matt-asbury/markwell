@@ -11,7 +11,9 @@ Thanks for your interest in contributing. Here’s how to get started.
 
 ### Registry setup
 
-The project does not commit `package-lock.json` or `.npmrc`. To use a custom registry, copy `.npmrc.example` to `.npmrc`, set `registry=` to your registry URL, then run `npm install`. Do not commit `.npmrc`.
+The project does not commit `package-lock.json` or `.npmrc`.
+
+If you use a **private npm registry** (corporate proxy, self-hosted, etc.), copy [.npmrc.example](.npmrc.example) to `.npmrc`, set `registry=` to your team’s registry URL, add authentication if required, then run `npm install`. Do not commit `.npmrc`.
 
 ### Dependencies
 
@@ -42,7 +44,16 @@ Please run `npm run lint`, `npm run format:check`, and `npm test` before submitt
 - `ipc-handlers.js` — IPC handlers for file/markdown/recent
 - `electron/preload.js` — Preload script; exposes `window.api`
 - `src/` — Renderer: `index.html`, `app.js`, `styles.css`
-- `lib/slugify.js` — Slugify helper (used in renderer and tests)
+- `lib/markdown-render.js` — Markdown / `.mmd` HTML for the main process
+- `lib/slugify.js`, `lib/renderer-helpers.js`, `lib/reader-dom.js` — Shared helpers (browser + tests where noted)
 - `test/` — Unit tests
+
+### Renderer script order
+
+Scripts in `index.html` are ordered deliberately: **DOMPurify and Mermaid (CDN) load before** `lib/*.js` and **`app.js`**, so sanitization and `mermaid.initialize` run at startup. `lib/slugify.js` defines a global `slugify` function; **`app.js` must not declare another `const slugify`** (same global scope — it throws and stops the rest of the script).
+
+### Debugging IPC / native dialogs
+
+Set **`MARKWELL_DEBUG_OPEN=1`** when launching Electron to log `open-file` / `showOpenDialog` steps to the terminal (`ipc-handlers.js`).
 
 We use Prettier for formatting and ESLint for linting. The codebase is intentionally minimal; prefer small, clear changes.

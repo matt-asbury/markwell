@@ -1,6 +1,6 @@
 /**
  * Preload script: exposes a minimal API to the renderer via contextBridge.
- * The renderer receives window.api with: openFile, readFile, getRecent, addRecent, renderMarkdown, openExternal, onFileSelected.
+ * The renderer receives window.api with: openFile, readFile, getRecent, addRecent, renderMarkdown, openExternal, resolvePath, onFileSelected.
  */
 const { contextBridge, ipcRenderer } = require('electron');
 
@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld('api', {
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   getRecent: () => ipcRenderer.invoke('get-recent'),
   addRecent: (filePath) => ipcRenderer.invoke('add-recent', filePath),
-  renderMarkdown: (md) => ipcRenderer.invoke('render-markdown', md),
+  renderMarkdown: (md, options) => ipcRenderer.invoke('render-markdown', md, options || {}),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
   resolvePath: (baseFilePath, linkHref) => ipcRenderer.invoke('resolve-path', baseFilePath, linkHref),
   onFileSelected: (cb) => {

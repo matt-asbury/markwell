@@ -1,9 +1,16 @@
 # NPM registry configuration (optional)
-# Copy this file to .npmrc (or merge into your user ~/.npmrc) and adjust as needed.
-# .npmrc is gitignored so your registry URL is never committed.
+# Copy this file to `.npmrc` in the repo root (or merge into `~/.npmrc`).
+# `.npmrc` is gitignored so tokens and machine-specific settings stay local.
 
-# Default: npm uses https://registry.npmjs.org/ when no .npmrc is present.
-# To use a different registry, create .npmrc in this project with, e.g.:
+# Example: use your organization’s private npm registry (replace host and path).
+# registry=https://YOUR_REGISTRY_HOST/npm/YOUR_REPO_KEY/
+
+# Default when no .npmrc is present: the public npm registry.
 # registry=https://registry.npmjs.org/
+
+# If your registry requires authentication:
+#
+# always-auth=true
+# //YOUR_REGISTRY_HOST/path/to/npm/repo/:_authToken=${NPM_TOKEN}
 
 # Then run: npm install

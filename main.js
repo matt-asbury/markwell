@@ -41,7 +41,7 @@ function openFileFromMenu() {
       properties: ['openFile'],
       title: 'Open Markdown file',
       filters: [
-        { name: 'Markdown', extensions: ['md', 'markdown'] },
+        { name: 'Markdown', extensions: ['md', 'markdown', 'mmd'] },
         { name: 'All files', extensions: ['*'] },
       ],
     })
@@ -55,7 +55,7 @@ function openFileFromMenu() {
 app.whenReady().then(() => {
   const store = createStore(app);
   mainWindow = createWindow(store);
-  setupIpcHandlers({ mainWindow, dialog, store });
+  setupIpcHandlers({ getMainWindow: () => mainWindow, dialog, store });
 
   const menu = Menu.buildFromTemplate([
     {
