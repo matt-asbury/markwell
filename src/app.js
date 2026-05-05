@@ -104,18 +104,27 @@ async function openFileDialog() {
   }
 }
 
-async function openFile(filePath) {
+/**
+ * Load markdown from disk and render. When `trackRecent` is true (user opened the file), update Recent and start live-reload watch.
+ */
+async function loadAndShowFile(filePath, { trackRecent }) {
   const result = await window.api.readFile(filePath);
   if (result.error) {
     showReader(basename(filePath), `Could not read file: ${result.error}`);
     currentFilePath = null;
+    if (window.api.watchActiveFile) await window.api.watchActiveFile(null);
     return;
   }
   currentFilePath = filePath;
-  await window.api.addRecent(filePath);
+  if (trackRecent) await window.api.addRecent(filePath);
   const html = await window.api.renderMarkdown(result.content, { filePath });
   showReader(basename(filePath), html, true);
-  refreshRecent();
+  if (trackRecent) refreshRecent();
+  if (trackRecent && window.api.watchActiveFile) await window.api.watchActiveFile(filePath);
+}
+
+async function openFile(filePath) {
+  await loadAndShowFile(filePath, { trackRecent: true });
 }
 
 function refreshRecent() {
@@ -158,6 +167,12 @@ if (openFileBtn) {
 }
 if (window.api) {
   window.api.onFileSelected((filePath) => openFile(filePath));
+  if (typeof window.api.onFileChanged === 'function') {
+    window.api.onFileChanged(() => {
+      if (!currentFilePath) return;
+      loadAndShowFile(currentFilePath, { trackRecent: false });
+    });
+  }
   refreshRecent();
 }
 

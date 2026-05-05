@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --test test/slugify.test.js test/store.test.js test/ipc-handlers.test.js test/renderer-helpers.test.js test/reader-dom.test.js test/markdown-render.test.js",
+    "test": "node --test test/slugify.test.js test/store.test.js test/ipc-handlers.test.js test/active-file-watcher.test.js test/renderer-helpers.test.js test/reader-dom.test.js test/markdown-render.test.js",
     "ci": "npm run lint && npm run format:check && npm test"
   },
   "author": "Markwell Contributors",

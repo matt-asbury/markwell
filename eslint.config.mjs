@@ -43,6 +43,8 @@ export default [
         document: 'readonly',
         module: 'readonly',
         console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
       },
     },
   },

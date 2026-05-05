@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { ipcMain, shell } = require('electron');
 const { renderMarkdownToHtml } = require('./lib/markdown-render');
+const { setActiveFileWatch } = require('./lib/active-file-watcher');
 
 const EXTERNAL_PROTOCOLS = /^https?:\/\//i;
 const MAILTO_PROTOCOL = /^mailto:/i;
@@ -130,6 +131,17 @@ function setupIpcHandlers({ getMainWindow, dialog, store }) {
     } catch {
       return null;
     }
+  });
+
+  ipcMain.handle('watch-active-file', (_, filePath) => {
+    return setActiveFileWatch(filePath, {
+      validatePath: validateFilePath,
+      onStableChange: (validPath) => {
+        const mw = typeof getMainWindow === 'function' ? getMainWindow() : null;
+        const win = mw && !mw.isDestroyed() ? mw : null;
+        if (win) win.webContents.send('file-changed', validPath);
+      },
+    });
   });
 }
 

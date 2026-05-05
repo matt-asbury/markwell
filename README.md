@@ -19,6 +19,7 @@ If you use a **private npm registry**, copy [.npmrc.example](.npmrc.example) to 
 - **Open file**: Click "Open file…" or use **Cmd+O** to pick a `.md` or `.mmd` file.
 - **Recent**: Recently opened files are listed in the sidebar; click to reopen.
 - **Reader**: Markdown is rendered in the main panel (readable font size, max-width). Mermaid works from fenced mermaid code blocks in `.md` and from raw diagram text in many `.mmd` files. Window size and position are remembered.
+- **Live reload**: If you edit and save the open file in another app, the reader updates automatically after a short pause (debounced).
 
 ## Build (optional)
 
@@ -31,6 +32,7 @@ Produces a Mac app in `dist/`. The first time you run `npm run build`, the scrip
 ## Project structure
 
 - `main.js` — Electron main process: window, menu, IPC handlers.
+- `lib/active-file-watcher.js` — Debounced `fs.watch` for the active file (live reload).
 - `electron/preload.js` — Preload script; exposes `window.api` to the renderer.
 - `src/` — Renderer: `index.html`, `app.js`, `styles.css`.
 - `scripts/build-icon.js` — Builds app icon from SVG for packaging.
