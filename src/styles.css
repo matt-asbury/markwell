@@ -230,6 +230,13 @@ body {
   overflow: hidden;
 }
 
+.reader-sanitizer-error {
+  color: #b91c1c;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  margin: 0;
+}
+
 .reader-body {
   flex: 1;
   overflow: auto;

@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 export default [
-  { ignores: ['node_modules/', 'dist/'] },
+  { ignores: ['node_modules/', 'dist/', 'lib/purify.min.js'] },
   js.configs.recommended,
   {
     files: ['**/*.js'],

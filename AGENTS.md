@@ -2,7 +2,7 @@
 
 ## Project
 
-Markwell is a minimal reader for macOS: open **Markdown** (`.md`) or **MultiMarkdown / diagram** (`.mmd`) files, or pick from Recent. Stack: Electron, Node.js 18+, npm. **Rendering**: [marked](https://github.com/markedjs/marked) + [marked-footnote](https://www.npmjs.com/package/marked-footnote); `.mmd` may be parsed as MultiMarkdown (metadata, footnotes) or, when the body looks like a single Mermaid diagram, as raw Mermaid. **Mermaid** and **DOMPurify** load from CDN with SRI in `index.html` (load order: CDN → `lib/*.js` → `app.js`). **Do not** redeclare the global `slugify` in `app.js` — `lib/slugify.js` already defines it; use `slugifyForHeadings` or `window.slugify` only.
+Markwell is a minimal reader for macOS: open **Markdown** (`.md`) or **MultiMarkdown / diagram** (`.mmd`) files, or pick from Recent. Stack: Electron, Node.js 18+, npm. **Rendering**: [marked](https://github.com/markedjs/marked) + [marked-footnote](https://www.npmjs.com/package/marked-footnote); `.mmd` may be parsed as MultiMarkdown (metadata, footnotes) or, when the body looks like a single Mermaid diagram, as raw Mermaid. **DOMPurify** ships as `lib/purify.min.js` (from the `dompurify` npm package); **Mermaid** loads from CDN with SRI in `index.html` (load order: DOMPurify → Mermaid → `lib/*.js` → `app.js`). **Do not** redeclare the global `slugify` in `app.js` — `lib/slugify.js` already defines it; use `slugifyForHeadings` or `window.slugify` only.
 
 ## Build and validate
 

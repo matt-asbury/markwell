@@ -36,11 +36,20 @@ function showReader(title, bodyContent, isHtml = false) {
   readerContent.classList.remove('hidden');
   readerTitle.textContent = title;
   if (isHtml) {
-    const safeHtml = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(bodyContent) : bodyContent;
-    readerBody.innerHTML = safeHtml;
-    renderMermaidDiagrams(readerBody);
-    if (typeof addHeadingIds === 'function') addHeadingIds(readerBody, slugifyForHeadings);
-    if (typeof buildTableOfContents === 'function') buildTableOfContents(readerBody, readerToc);
+    if (typeof DOMPurify === 'undefined') {
+      readerBody.innerHTML = '';
+      const p = document.createElement('p');
+      p.className = 'reader-sanitizer-error';
+      p.textContent =
+        'The HTML sanitizer did not load, so this document cannot be shown safely. Restart the app or reinstall Markwell.';
+      readerBody.appendChild(p);
+      if (typeof buildTableOfContents === 'function') buildTableOfContents(null, readerToc);
+    } else {
+      readerBody.innerHTML = DOMPurify.sanitize(bodyContent);
+      renderMermaidDiagrams(readerBody);
+      if (typeof addHeadingIds === 'function') addHeadingIds(readerBody, slugifyForHeadings);
+      if (typeof buildTableOfContents === 'function') buildTableOfContents(readerBody, readerToc);
+    }
   } else {
     readerBody.textContent = bodyContent;
     if (typeof buildTableOfContents === 'function') buildTableOfContents(null, readerToc);
